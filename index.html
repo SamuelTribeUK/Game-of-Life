@@ -59,44 +59,60 @@
 		}
 	});
 
-	let geometry = new THREE.BoxGeometry(1, 1, 1);
-	let material = new THREE.MeshLambertMaterial({color: "#51d0de"});
-	let mesh = new THREE.Mesh(geometry, material);
+	let boxes = [];
 
-	mesh.position.set(0, -2, -2);
+	for (let i = -5; i < 5; i++) {
+		let geometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+		let material = new THREE.MeshLambertMaterial({color: "#" + ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6)});
+		let mesh = new THREE.Mesh(geometry, material);
 
-	scene.add(mesh);
+		mesh.position.set(i, 0, -2);
+
+		boxes[i + 5] = mesh;
+
+		scene.add(boxes[i + 5]);
+	}
 
 	let light = new THREE.PointLight(0xFFFFFF, 1, 500);
 	light.position.set(10, 25, 25);
 	scene.add(light);
+	light.position.set(-10, 25, 25);
+	scene.add(light);
 
 	let render = function() {
 		requestAnimationFrame(render);
-
 		renderer.render(scene, camera);
 	}
 
-	function onMouseMove(event) {
-		event.preventDefault();
-
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-		rayCaster.setFromCamera(mouse, camera);
-
-		let intersects = rayCaster.intersectObjects(scene.children, true);
-
-		for (let i = 0; i < intersects.length; i++) {
+	function randomMove() {
+		for (let i = 0; i < 10; i++) {
 			this.tl = new TimelineMax();
-			this.tl.to(intersects[i].object.scale, {duration: 1, x: 2, ease: Expo.easeOut});
-			this.tl.to(intersects[i].object.scale, {duration: .5, x: .5, ease: Expo.easeOut});
-			this.tl.to(intersects[i].object.position, {duration: .5, x: -5, ease: Expo.easeOut});
-			this.tl.to(intersects[i].object.rotation, {duration: .5, y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5");
+			this.tl.to(boxes[i].position, {duration: 1, x: Math.random() * 2, y: Math.random() * 2, z: Math.random() * 2, ease: Expo.easeOut});
 		}
 	}
 
-	window.addEventListener("click", onMouseMove);
+	// function onMouseMove(event) {
+	// 	event.preventDefault();
+	//
+	// 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	// 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+	//
+	// 	rayCaster.setFromCamera(mouse, camera);
+	//
+	// 	let intersects = rayCaster.intersectObjects(scene.children, true);
+	//
+	// 	for (let i = 0; i < intersects.length; i++) {
+	// 		this.tl = new TimelineMax();
+	// 		this.tl.to(intersects[i].object.scale, {duration: 1, x: 2, ease: Expo.easeOut});
+	// 		this.tl.to(intersects[i].object.scale, {duration: .5, x: .5, ease: Expo.easeOut});
+	// 		this.tl.to(intersects[i].object.position, {duration: .5, x: -5, ease: Expo.easeOut});
+	// 		this.tl.to(intersects[i].object.rotation, {duration: .5, y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5");
+	// 	}
+	// }
+
+	// window.addEventListener("click", onMouseMove);
+
+	setInterval(randomMove, 1000);
 
 	render();
 
