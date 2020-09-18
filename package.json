@@ -2,6 +2,7 @@
   "name": "three",
   "version": "1.0.0",
   "dependencies": {
-    "gsap": "^3.5.1"
+    "gsap": "^3.5.1",
+    "jquery": "^3.5.1"
   }
 }
