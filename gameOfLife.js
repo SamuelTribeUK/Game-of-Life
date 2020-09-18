@@ -34,9 +34,9 @@ let addLights = function() {
 
 let setupScene = function() {
 	if (xSize >= ySize) {
-		camera.position.z = xSize;
+		camera.position.z = xSize + 5;
 	} else {
-		camera.position.z = ySize;
+		camera.position.z = ySize + 5;
 	}
 
 	renderer.setClearColor("#ffffff");
