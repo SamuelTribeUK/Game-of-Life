@@ -1,6 +1,6 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
- * TODO Implement a check for when nothing is moving after 2 turns then end the simulation
+ * TODO Implement the side bar to allow user input for game options
  */
 
 let xSize = 20;
