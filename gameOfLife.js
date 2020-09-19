@@ -1,5 +1,4 @@
-/* TODO Implement Game of Life (2D) using a grid of 3D boxes to represent the cells
- * The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
+/* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
  * TODO Implement a check for when nothing is moving after 2 turns then end the simulation
  */
@@ -31,6 +30,48 @@ let addLights = function() {
 	scene.add(light);
 }
 
+let cameraMove = function(event) {
+	console.log(event.key);
+	switch (event.key) {
+		case 'ArrowUp' || 'Up':
+			camera.position.y += 1;
+			break;
+		case 'ArrowLeft' || 'Left':
+			camera.position.x -= 1;
+			break;
+		case 'ArrowRight' || 'Right':
+			camera.position.x += 1;
+			break;
+		case 'ArrowDown' || 'Down':
+			camera.position.y -= 1;
+	}
+}
+
+let moveCamera = function(direction) {
+	switch (direction) {
+		case 'up':
+			camera.position.y += 1;
+			break;
+		case 'left':
+			camera.position.x -= 1;
+			break;
+		case 'right':
+			camera.position.x += 1;
+			break;
+		case 'down':
+			camera.position.y -= 1;
+	}
+
+}
+
+let zoomIn = function() {
+	camera.position.z -= 1;
+}
+
+let zoomOut = function() {
+	camera.position.z += 1;
+}
+
 let setupScene = function() {
 	if (xSize >= ySize) {
 		camera.position.z = xSize + 5;
@@ -49,6 +90,8 @@ let setupScene = function() {
 
 		camera.updateProjectionMatrix();
 	});
+
+	window.addEventListener("keydown", cameraMove)
 	addLights();
 }
 

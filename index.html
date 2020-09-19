@@ -14,9 +14,15 @@
 
 <div id="mySidepanel" class="sidepanel">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<button class="stopStart" id="stopStart" onClick="stopStart()">Start</button>
 	<p id="status"></p>
 	<p id="iterations"></p>
-	<button class="stopStart" id="stopStart" onClick="stopStart()">Start</button>
+	<button class="zoomIn" id="zoomIn" onclick="zoomIn()">+</button>
+	<button class="zoomOut" id="zoomOut" onclick="zoomOut()">-</button>
+	<button class="moveCamera" id="cameraLeft" onclick="moveCamera('left')">&larr;</button>
+	<button class="moveCamera" id="cameraRight" onclick="moveCamera('right')">&rarr;</button>
+	<button class="moveCamera" id="cameraUp" onclick="moveCamera('up')">&uarr;</button>
+	<button class="moveCamera" id="cameraDown" onclick="moveCamera('down')">&darr;</button>
 </div>
 
 <button class="openbtn" onclick="openNav()">&#9776; Settings</button>

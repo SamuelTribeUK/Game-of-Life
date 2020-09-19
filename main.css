@@ -19,20 +19,28 @@ canvas {
     left: 0;
     background-color: #111; /* Black*/
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 40px; /* Place content 60px from the top */
+    padding-top: 70px;
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
     font-family: "Cascadia Code", serif;
 }
 
-/* The sidepanel text */
 .sidepanel p, a {
-    padding: 8px 8px 8px 8px;
     text-decoration: none;
     font-size: 18px;
     font-family: "Cascadia Code", serif;
     color: #ffffff;
     display: block;
     transition: 0.3s;
+}
+
+/* The sidepanel text */
+.sidepanel p {
+    margin: 0 0;
+    padding: 2px 8px 0 8px;
+}
+
+.sidepanel a {
+    padding: 8px 8px 8px 8px;
 }
 
 /* Position and style the close button (top right corner) */
@@ -50,7 +58,6 @@ canvas {
     top: 25px;
     left: 32px;
     font-size: 25px;
-
 }
 
 /* Style the button that is used to open the sidepanel */
