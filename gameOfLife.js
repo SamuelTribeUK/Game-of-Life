@@ -155,7 +155,9 @@ let simulateStep = function() {
 
 	if (!changed) {
 		clearInterval(interval);
-		console.log("stopped");
+		document.getElementById("stopStart").innerText = "Start";
+		status = "stopped";
+		updateSidebar();
 	}
 
 	updateSidebar();
