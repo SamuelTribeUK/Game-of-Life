@@ -1,15 +1,21 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
  * TODO Implement the side bar to allow user input for game options
+ * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
+
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import $ from "jquery";
+import {Vector3} from "three";
 
 let xSize = 20;
 let ySize = 20;
 let timeout = 200;
 
-let previousBoard;
 let gameBoard;
 
+let controls;
 let iterations = 0;
 let status = "stopped";
 
@@ -20,7 +26,7 @@ document.getElementById("stopStart").innerText = "Start";
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
 let renderer = new THREE.WebGLRenderer({antialias: true});
-let geometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+let geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
 let light = new THREE.PointLight(0xFFFFFF, 1, 500);
 
 let addLights = function() {
@@ -44,34 +50,34 @@ let cameraMove = function(event) {
 		case 'ArrowDown' || 'Down':
 			camera.position.y -= 1;
 	}
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 }
 
-let moveCamera = function(direction) {
-	switch (direction) {
-		case 'up':
+let moveCamera = function(event) {
+	switch (event.target.id) {
+		case 'cameraUp':
 			camera.position.y += 1;
 			break;
-		case 'left':
+		case 'cameraLeft':
 			camera.position.x -= 1;
 			break;
-		case 'right':
+		case 'cameraRight':
 			camera.position.x += 1;
 			break;
-		case 'down':
+		case 'cameraDown':
 			camera.position.y -= 1;
 	}
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 }
 
 let zoomIn = function() {
 	camera.position.z -= 1;
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 }
 
 let zoomOut = function() {
 	camera.position.z += 1;
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 }
 
 let setupScene = function() {
@@ -91,17 +97,18 @@ let setupScene = function() {
 		camera.aspect = (window.innerWidth - 250) / (window.innerHeight);
 
 		camera.updateProjectionMatrix();
-
-		requestAnimationFrame(render);
 	});
 
-	window.addEventListener("keydown", cameraMove)
+	controls = new OrbitControls(camera, renderer.domElement);
+
 	addLights();
 }
 
 setupScene();
 
 let render = function() {
+	requestAnimationFrame(render);
+	// controls.update();
 	renderer.render(scene, camera);
 }
 
@@ -117,8 +124,6 @@ let initialiseBoard = function() {
 			addMesh(state, i, j);
 		}
 	}
-
-	previousBoard = $.extend(true, [], gameBoard);
 }
 
 let simulateStep = function() {
@@ -210,7 +215,7 @@ let redraw = function() {
 		}
 	}
 
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 }
 
 let stopStart = function() {
@@ -229,8 +234,39 @@ let stopStart = function() {
 
 initialiseBoard(xSize, ySize);
 
-camera.position.x = xSize / 2;
-camera.position.y = ySize / 2;
+camera.position.x = (xSize - 1) / 2;
+camera.position.y = (ySize - 1) / 2;
+
+// camera.up = new Vector3(0,0,1);
+controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
+
+controls.update();
+
+let attachClickEvents = function() {
+	let button = document.querySelector("#stopStart");
+	button.addEventListener("click", stopStart);
+
+	button = document.querySelector("#zoomIn");
+	button.addEventListener("click", zoomIn);
+
+	button = document.querySelector("#zoomOut");
+	button.addEventListener("click", zoomOut);
+
+	button = document.querySelector("#cameraLeft");
+	button.addEventListener("click", moveCamera);
+
+	button = document.querySelector("#cameraRight");
+	button.addEventListener("click", moveCamera);
+
+	button = document.querySelector("#cameraUp");
+	button.addEventListener("click", moveCamera);
+
+	button = document.querySelector("#cameraDown");
+	button.addEventListener("click", moveCamera);
+}
+
+
+window.onload = attachClickEvents;
 
 updateSidebar();
 

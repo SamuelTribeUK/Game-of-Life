@@ -1,8 +1,14 @@
 {
-  "name": "three",
+  "name": "threetesting",
   "version": "1.0.0",
   "dependencies": {
     "gsap": "^3.5.1",
-    "jquery": "^3.5.1"
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
+    "three": "^0.120.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }
