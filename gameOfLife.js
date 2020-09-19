@@ -5,6 +5,7 @@
 
 let xSize = 20;
 let ySize = 20;
+let timeout = 200;
 
 let previousBoard;
 let gameBoard;
@@ -16,10 +17,8 @@ let interval;
 
 document.getElementById("stopStart").innerText = "Start";
 
-let timeout = 200;
-
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth/(window.innerHeight - 50), 0.1, 1000);
+let camera = new THREE.PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
 let renderer = new THREE.WebGLRenderer({antialias: true});
 let geometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
 let light = new THREE.PointLight(0xFFFFFF, 1, 500);
@@ -45,6 +44,7 @@ let cameraMove = function(event) {
 		case 'ArrowDown' || 'Down':
 			camera.position.y -= 1;
 	}
+	requestAnimationFrame(render);
 }
 
 let moveCamera = function(direction) {
@@ -61,15 +61,17 @@ let moveCamera = function(direction) {
 		case 'down':
 			camera.position.y -= 1;
 	}
-
+	requestAnimationFrame(render);
 }
 
 let zoomIn = function() {
 	camera.position.z -= 1;
+	requestAnimationFrame(render);
 }
 
 let zoomOut = function() {
 	camera.position.z += 1;
+	requestAnimationFrame(render);
 }
 
 let setupScene = function() {
@@ -80,15 +82,17 @@ let setupScene = function() {
 	}
 
 	renderer.setClearColor("#ffffff");
-	renderer.setSize(window.innerWidth, window.innerHeight - 50);
+	renderer.setSize(window.innerWidth - 250, window.innerHeight);
 
 	document.body.appendChild(renderer.domElement);
 
 	window.addEventListener("resize", () => {
-		renderer.setSize(window.innerWidth, window.innerHeight - 50);
-		camera.aspect = window.innerWidth / (window.innerHeight - 50);
+		renderer.setSize(window.innerWidth - 250, window.innerHeight);
+		camera.aspect = (window.innerWidth - 250) / (window.innerHeight);
 
 		camera.updateProjectionMatrix();
+
+		requestAnimationFrame(render);
 	});
 
 	window.addEventListener("keydown", cameraMove)
@@ -98,7 +102,6 @@ let setupScene = function() {
 setupScene();
 
 let render = function() {
-	requestAnimationFrame(render);
 	renderer.render(scene, camera);
 }
 
@@ -114,10 +117,14 @@ let initialiseBoard = function() {
 			addMesh(state, i, j);
 		}
 	}
+
+	previousBoard = $.extend(true, [], gameBoard);
 }
 
 let simulateStep = function() {
 	let newGameBoard = $.extend(true, [], gameBoard);
+
+	let changed = false;
 
 	for (let i = 0; i < xSize; i++) {
 		for (let j = 0; j < ySize; j++) {
@@ -134,14 +141,23 @@ let simulateStep = function() {
 			} else if (liveNum < 4 && gameBoard[i][j].state === 1) {
 				newGameBoard[i][j].state = 1;
 			} else if (liveNum > 3 && gameBoard[i][j].state === 1) {
+				changed = true;
 				newGameBoard[i][j].state = 0;
 			} else if (liveNum === 3 && gameBoard[i][j].state === 0) {
+				changed = true;
 				newGameBoard[i][j].state = 1;
 			}
 		}
 	}
 	gameBoard = $.extend(true, [], newGameBoard);
+
 	iterations += 1;
+
+	if (!changed) {
+		clearInterval(interval);
+		console.log("stopped");
+	}
+
 	updateSidebar();
 	redraw();
 }
@@ -191,6 +207,8 @@ let redraw = function() {
 			gameBoard[i][j].box.material.color.set(colour);
 		}
 	}
+
+	requestAnimationFrame(render);
 }
 
 let stopStart = function() {

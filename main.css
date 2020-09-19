@@ -7,14 +7,16 @@ body {
 canvas {
     z-index: 0;
     display: block;
+    float:right;
 }
 
 /* The sidepanel menu */
 .sidepanel {
     height: 100vh; /* Specify a height */
-    width: 0; /* 0 width - change this with JavaScript */
+    width: 250px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
+    float: left;
     top: 0;
     left: 0;
     background-color: #111; /* Black*/
@@ -41,6 +43,14 @@ canvas {
 
 .sidepanel a {
     padding: 8px 8px 8px 8px;
+}
+
+.sidepanel button {
+    display: inline;
+}
+
+.sidepanel label {
+
 }
 
 /* Position and style the close button (top right corner) */

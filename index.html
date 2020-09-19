@@ -10,10 +10,7 @@
 </head>
 <body>
 
-<script src="sidePanel.js"></script>
-
 <div id="mySidepanel" class="sidepanel">
-	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<button class="stopStart" id="stopStart" onClick="stopStart()">Start</button>
 	<p id="status"></p>
 	<p id="iterations"></p>
@@ -23,9 +20,15 @@
 	<button class="moveCamera" id="cameraRight" onclick="moveCamera('right')">&rarr;</button>
 	<button class="moveCamera" id="cameraUp" onclick="moveCamera('up')">&uarr;</button>
 	<button class="moveCamera" id="cameraDown" onclick="moveCamera('down')">&darr;</button>
-</div>
+	<label for="xSizeInput">x: </label>
+	<input type="number" id="xSizeInput">
 
-<button class="openbtn" onclick="openNav()">&#9776; Settings</button>
+	<label for="ySizeInput">y: </label>
+	<input type="number" id="ySizeInput">
+
+	<label for="timeoutInput">timeout: </label>
+	<input type="number" id="timeoutInput">
+</div>
 
 <script src="gameOfLife.js"></script>
 
