@@ -1,8 +1,70 @@
 body {
     margin: 0;
     height: 100vh;
+    font-family: "Cascadia Code", serif;
 }
 
 canvas {
+    z-index: 0;
     display: block;
+}
+
+/* The sidepanel menu */
+.sidepanel {
+    height: 100vh; /* Specify a height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 40px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+    font-family: "Cascadia Code", serif;
+}
+
+/* The sidepanel text */
+.sidepanel p, a {
+    padding: 8px 8px 8px 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: "Cascadia Code", serif;
+    color: #ffffff;
+    display: block;
+    transition: 0.3s;
+}
+
+/* Position and style the close button (top right corner) */
+.sidepanel .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidepanel .stopStart {
+    position: absolute;
+    font-family: "Cascadia Code", serif;
+    top: 25px;
+    left: 32px;
+    font-size: 25px;
+
+}
+
+/* Style the button that is used to open the sidepanel */
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    display: inline-block;
+    font-family: "Cascadia Code", serif;
+}
+
+.openbtn:hover {
+    background-color: #444;
 }
