@@ -1,6 +1,7 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
  * TODO Implement the side bar to allow user input for game options
+ * TODO Improve efficiency of imports
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
 
