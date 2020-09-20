@@ -26,9 +26,9 @@ canvas {
     font-family: "Cascadia Code", serif;
 }
 
-.sidepanel p, a {
+.sidepanel p, a, label {
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
     font-family: "Cascadia Code", serif;
     color: #ffffff;
     display: block;

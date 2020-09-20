@@ -4,7 +4,6 @@
   "dependencies": {
     "gsap": "^3.5.1",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
     "three": "^0.120.1"
   },
   "devDependencies": {

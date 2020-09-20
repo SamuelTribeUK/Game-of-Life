@@ -1,18 +1,17 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
  * TODO Implement the side bar to allow user input for game options
- * TODO Improve efficiency of imports
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
 
-import * as THREE from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, PointLight, MeshLambertMaterial, Mesh, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import $ from "jquery";
-import {Vector3} from "three";
 
 let xSize = 20;
 let ySize = 20;
 let timeout = 200;
+let orbitToggle = false;
 
 let gameBoard;
 
@@ -24,11 +23,11 @@ let interval;
 
 document.getElementById("stopStart").innerText = "Start";
 
-let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
-let renderer = new THREE.WebGLRenderer({antialias: true});
-let geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-let light = new THREE.PointLight(0xFFFFFF, 1, 500);
+let scene = new Scene();
+let camera = new PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
+let renderer = new WebGLRenderer({antialias: true});
+let geometry = new BoxGeometry(0.9, 0.9, 0.9);
+let light = new PointLight(0xFFFFFF, 1, 500);
 
 let addLights = function() {
 	let biggestSize = (xSize > ySize) ? xSize : ySize;
@@ -37,7 +36,6 @@ let addLights = function() {
 }
 
 let cameraMove = function(event) {
-	console.log(event.key);
 	switch (event.key) {
 		case 'ArrowUp' || 'Up':
 			camera.position.y += 1;
@@ -51,7 +49,7 @@ let cameraMove = function(event) {
 		case 'ArrowDown' || 'Down':
 			camera.position.y -= 1;
 	}
-	//requestAnimationFrame(render);
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 let moveCamera = function(event) {
@@ -68,17 +66,17 @@ let moveCamera = function(event) {
 		case 'cameraDown':
 			camera.position.y -= 1;
 	}
-	//requestAnimationFrame(render);
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 let zoomIn = function() {
 	camera.position.z -= 1;
-	//requestAnimationFrame(render);
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 let zoomOut = function() {
 	camera.position.z += 1;
-	//requestAnimationFrame(render);
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 let setupScene = function() {
@@ -93,23 +91,15 @@ let setupScene = function() {
 
 	document.body.appendChild(renderer.domElement);
 
-	window.addEventListener("resize", () => {
-		renderer.setSize(window.innerWidth - 250, window.innerHeight);
-		camera.aspect = (window.innerWidth - 250) / (window.innerHeight);
-
-		camera.updateProjectionMatrix();
-	});
-
-	controls = new OrbitControls(camera, renderer.domElement);
-
 	addLights();
 }
 
 setupScene();
 
 let render = function() {
-	requestAnimationFrame(render);
-	// controls.update();
+	if (orbitToggle) {
+		requestAnimationFrame(render);
+	}
 	renderer.render(scene, camera);
 }
 
@@ -168,6 +158,8 @@ let simulateStep = function() {
 
 	updateSidebar();
 	redraw();
+
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 let addMesh = function(state, i, j) {
@@ -177,8 +169,8 @@ let addMesh = function(state, i, j) {
 	} else {
 		colour = "#19A74A";
 	}
-	let material = new THREE.MeshLambertMaterial({color: colour});
-	let mesh = new THREE.Mesh(geometry, material);
+	let material = new MeshLambertMaterial({color: colour});
+	let mesh = new Mesh(geometry, material);
 	mesh.position.set(i,j,0);
 	gameBoard[i][j] = {box: mesh, state: state};
 	scene.add(gameBoard[i][j].box);
@@ -215,8 +207,6 @@ let redraw = function() {
 			gameBoard[i][j].box.material.color.set(colour);
 		}
 	}
-
-	//requestAnimationFrame(render);
 }
 
 let stopStart = function() {
@@ -231,17 +221,13 @@ let stopStart = function() {
 		status = "stopped";
 		updateSidebar();
 	}
+	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 initialiseBoard(xSize, ySize);
 
 camera.position.x = (xSize - 1) / 2;
 camera.position.y = (ySize - 1) / 2;
-
-// camera.up = new Vector3(0,0,1);
-controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
-
-controls.update();
 
 let attachClickEvents = function() {
 	let button = document.querySelector("#stopStart");
@@ -264,10 +250,40 @@ let attachClickEvents = function() {
 
 	button = document.querySelector("#cameraDown");
 	button.addEventListener("click", moveCamera);
+
+	orbitCheckbox.addEventListener("change", toggleOrbitControls);
 }
 
+let orbitCheckbox = document.getElementById("orbitControls");
+
+let toggleOrbitControls = function() {
+	if (orbitCheckbox.checked) {
+		// Enable orbit controls
+		document.removeEventListener("keydown", cameraMove);
+		controls = new OrbitControls(camera, renderer.domElement);
+		controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
+		controls.update();
+		orbitToggle = true;
+		render();
+	} else {
+		// Disable orbit controls
+		controls.dispose();
+		orbitToggle = false;
+		document.addEventListener("keydown", cameraMove);
+	}
+}
 
 window.onload = attachClickEvents;
+
+window.addEventListener("resize", () => {
+	renderer.setSize(window.innerWidth - 250, window.innerHeight);
+	camera.aspect = (window.innerWidth - 250) / (window.innerHeight);
+
+	camera.updateProjectionMatrix();
+	requestAnimationFrame(render);
+});
+
+document.addEventListener("keydown", cameraMove);
 
 updateSidebar();
 
