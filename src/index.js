@@ -4,7 +4,16 @@
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
 
-import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, PointLight, MeshLambertMaterial, Mesh, Vector3 } from "three";
+import {
+	Scene,
+	PerspectiveCamera,
+	WebGLRenderer,
+	BoxGeometry,
+	PointLight,
+	MeshLambertMaterial,
+	Mesh,
+	Vector3,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import $ from "jquery";
 
@@ -33,6 +42,9 @@ let addLights = function() {
 	let biggestSize = (xSize > ySize) ? xSize : ySize;
 	light.position.set(xSize/2, ySize/2, biggestSize);
 	scene.add(light);
+	light[0] = new PointLight(0xFFFFFF, 1, 500);
+	light[0].position.set(xSize/2, ySize/2, -biggestSize);
+	scene.add(light[0]);
 }
 
 let cameraMove = function(event) {
