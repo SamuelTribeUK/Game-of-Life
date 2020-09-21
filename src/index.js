@@ -112,6 +112,7 @@ setupScene();
 
 let render = function() {
 	if (orbitToggle) {
+		console.log("orbit toggle true, animation frame requested");
 		requestAnimationFrame(render);
 	}
 	renderer.render(scene, camera);
@@ -332,10 +333,6 @@ let updateValues = function(event) {
 	iterations = 0;
 
 	scene = new Scene();
-	camera = new PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
-	renderer = new WebGLRenderer({antialias: true});
-	geometry = new BoxGeometry(0.9, 0.9, 0.9);
-	light = new PointLight(0xFFFFFF, 1, 500);
 
 	setupScene();
 
@@ -343,6 +340,7 @@ let updateValues = function(event) {
 
 	camera.position.x = (xSize - 1) / 2;
 	camera.position.y = (ySize - 1) / 2;
+	camera.lookAt(new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0))
 
 	toggleOrbitControls();
 
@@ -391,7 +389,10 @@ let toggleOrbitControls = function() {
 		render();
 	} else {
 		// Disable orbit controls
-		// controls.dispose();
+		if (typeof controls !== "undefined") {
+			controls.dispose();
+			controls.update();
+		}
 		orbitToggle = false;
 		toggleControls(true);
 		document.addEventListener("keydown", cameraMove);
