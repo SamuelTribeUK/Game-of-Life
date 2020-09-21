@@ -1,6 +1,5 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
- * TODO Implement the side bar to allow user input for game options
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
 
@@ -16,11 +15,14 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import $ from "jquery";
+import Toastify from "toastify-js";
 
-let xSize = 20;
-let ySize = 20;
+let xSize = 25;
+let ySize = 25;
 let timeout = 200;
 let orbitToggle = false;
+
+let warning = false;
 
 let gameBoard;
 
@@ -93,9 +95,9 @@ let zoomOut = function() {
 
 let setupScene = function() {
 	if (xSize >= ySize) {
-		camera.position.z = xSize + 5;
+		camera.position.z = xSize;
 	} else {
-		camera.position.z = ySize + 5;
+		camera.position.z = ySize;
 	}
 
 	renderer.setClearColor("#ffffff");
@@ -165,6 +167,7 @@ let simulateStep = function() {
 		clearInterval(interval);
 		document.getElementById("stopStart").innerText = "Start";
 		status = "stopped";
+		notify("Game has ended","success");
 		updateSidebar();
 	}
 
@@ -194,9 +197,9 @@ let updateSidebar = function() {
 }
 
 let checkCell = function(currX, currY) {
-	if (currX < 0 || currX >= ySize) {
+	if (currX < 0 || currX >= xSize) {
 		return 0;
-	} else if (currY < 0 || currY >= xSize) {
+	} else if (currY < 0 || currY >= ySize) {
 		return 0;
 	} else if (gameBoard[currX][currY].state === 1) {
 		return 1;
@@ -242,28 +245,137 @@ camera.position.x = (xSize - 1) / 2;
 camera.position.y = (ySize - 1) / 2;
 
 let attachClickEvents = function() {
-	let button = document.querySelector("#stopStart");
-	button.addEventListener("click", stopStart);
+	let element = document.querySelector("#stopStart");
+	element.addEventListener("click", stopStart);
 
-	button = document.querySelector("#zoomIn");
-	button.addEventListener("click", zoomIn);
+	element = document.querySelector("#zoomIn");
+	element.addEventListener("click", zoomIn);
 
-	button = document.querySelector("#zoomOut");
-	button.addEventListener("click", zoomOut);
+	element = document.querySelector("#zoomOut");
+	element.addEventListener("click", zoomOut);
 
-	button = document.querySelector("#cameraLeft");
-	button.addEventListener("click", moveCamera);
+	element = document.querySelector("#cameraLeft");
+	element.addEventListener("click", moveCamera);
 
-	button = document.querySelector("#cameraRight");
-	button.addEventListener("click", moveCamera);
+	element = document.querySelector("#cameraRight");
+	element.addEventListener("click", moveCamera);
 
-	button = document.querySelector("#cameraUp");
-	button.addEventListener("click", moveCamera);
+	element = document.querySelector("#cameraUp");
+	element.addEventListener("click", moveCamera);
 
-	button = document.querySelector("#cameraDown");
-	button.addEventListener("click", moveCamera);
+	element = document.querySelector("#cameraDown");
+	element.addEventListener("click", moveCamera);
+
+	element = document.querySelector("#submit");
+	element.addEventListener("click", updateValues);
 
 	orbitCheckbox.addEventListener("change", toggleOrbitControls);
+
+	element = document.getElementById("xSizeInput");
+	element.value = xSize;
+
+	element = document.getElementById("ySizeInput");
+	element.value = ySize;
+
+	element = document.getElementById("timeoutInput");
+	let rate = 1000 / timeout;
+	element.value = rate.toFixed(1);
+
+}
+
+let updateValues = function(event) {
+	event.preventDefault(); // This stops the form from submitting and refreshing the page
+	let inputX = document.getElementById("xSizeInput").value;
+	let inputY = document.getElementById("ySizeInput").value;
+	let timeInput = document.getElementById("timeoutInput").value;
+
+	if (inputX === "" || inputY === "" || timeInput === "") {
+		notify("Dimensions or rate cannot be empty","error");
+		return false;
+	}
+
+	if (inputX < 1 || inputY < 1) {
+		notify("Dimensions must be 1 or more","error");
+		return false;
+	}
+
+	if (timeInput < 0.1) {
+		notify("rate must be 0.1 or more","error");
+		return false;
+	}
+
+	if (timeInput > 10) {
+		notify("WARNING: Rates higher than 10 can cause issues!","error");
+	}
+
+	if (inputX > 100 || inputY > 100) {
+		if (!warning) {
+			notify("WARNING: Large dimensions can use a lot of resources! Click update again if you are sure","error");
+			warning = true;
+			return false;
+		}
+	}
+
+	xSize = inputX;
+	ySize = inputY;
+	timeout = 1000 / timeInput;
+
+	document.body.removeChild(renderer.domElement);
+
+	doDispose(scene);
+
+	if (status === "playing") {
+		stopStart();
+	}
+
+	gameBoard = null;
+	iterations = 0;
+
+	scene = new Scene();
+	camera = new PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
+	renderer = new WebGLRenderer({antialias: true});
+	geometry = new BoxGeometry(0.9, 0.9, 0.9);
+	light = new PointLight(0xFFFFFF, 1, 500);
+
+	setupScene();
+
+	initialiseBoard(xSize, ySize);
+
+	camera.position.x = (xSize - 1) / 2;
+	camera.position.y = (ySize - 1) / 2;
+
+	toggleOrbitControls();
+
+	updateSidebar();
+
+	render();
+}
+
+let notify = function(text, type) {
+	let backgroundColor;
+	if (type === "success") {
+		backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
+	} else if (type === "error") {
+		backgroundColor = "linear-gradient(to right, #FF5F6D, #FFC371)";
+	}
+	Toastify({
+		text: text,
+		duration: 10000,
+		close: true,
+		gravity: "top", // `top` or `bottom`
+		position: 'right', // `left`, `center` or `right`
+		backgroundColor: backgroundColor,
+		stopOnFocus: true, // Prevents dismissing of toast on hover
+		onClick: function(){} // Callback after click
+	}).showToast();
+}
+
+let toggleControls = function(enable) {
+	let cameraControls = document.getElementById("cameraControls");
+	let buttons = cameraControls.getElementsByTagName("button");
+		for (let i = 0; i < buttons.length; i++) {
+			buttons[i].disabled = !enable;
+		}
 }
 
 let orbitCheckbox = document.getElementById("orbitControls");
@@ -276,13 +388,42 @@ let toggleOrbitControls = function() {
 		controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
 		controls.update();
 		orbitToggle = true;
+		toggleControls(false);
 		render();
 	} else {
 		// Disable orbit controls
-		controls.dispose();
+		// controls.dispose();
 		orbitToggle = false;
+		toggleControls(true);
 		document.addEventListener("keydown", cameraMove);
 	}
+}
+
+// https://github.com/mrdoob/three.js/issues/5175
+let doDispose = function(obj) {
+	if (obj !== null)
+	{
+		for (let i = 0; i < obj.children.length; i++)
+		{
+			doDispose(obj.children[i]);
+		}
+		if (obj.geometry)
+		{
+			obj.geometry.dispose();
+			obj.geometry = undefined;
+		}
+		if (obj.material)
+		{
+			if (obj.material.map)
+			{
+				obj.material.map.dispose();
+				obj.material.map = undefined;
+			}
+			obj.material.dispose();
+			obj.material = undefined;
+		}
+	}
+	obj = undefined;
 }
 
 window.onload = attachClickEvents;
@@ -296,7 +437,6 @@ window.addEventListener("resize", () => {
 });
 
 document.addEventListener("keydown", cameraMove);
-
 updateSidebar();
 
 render();

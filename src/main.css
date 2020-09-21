@@ -21,7 +21,8 @@ canvas {
     left: 0;
     background-color: #111; /* Black*/
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 70px;
+    padding-top: 20px;
+    padding-left: 20px;
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
     font-family: "Cascadia Code", serif;
 }
@@ -31,57 +32,42 @@ canvas {
     font-size: 16px;
     font-family: "Cascadia Code", serif;
     color: #ffffff;
-    display: block;
     transition: 0.3s;
 }
 
 /* The sidepanel text */
 .sidepanel p {
     margin: 0 0;
-    padding: 2px 8px 0 8px;
 }
 
-.sidepanel a {
-    padding: 8px 8px 8px 8px;
+.moveCamera {
+    float: left;
+    width: 13%;
+    margin: 2px;
+}
+
+.orbitBox {
+    float: left;
+}
+
+.orbitToggle {
+    display: inline-block;
+}
+
+input[type="number"] {
+    width: 50px;
+    font-family: "Cascadia Code", serif;
+}
+input[type="submit"] {
+    font-family: "Cascadia Code", serif;
 }
 
 .sidepanel button {
     display: inline;
 }
 
-.sidepanel label {
-
-}
-
-/* Position and style the close button (top right corner) */
-.sidepanel .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
-.sidepanel .stopStart {
-    position: absolute;
+.stopStart {
     font-family: "Cascadia Code", serif;
-    top: 25px;
-    left: 32px;
+
     font-size: 25px;
-}
-
-/* Style the button that is used to open the sidepanel */
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #111;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    display: inline-block;
-    font-family: "Cascadia Code", serif;
-}
-
-.openbtn:hover {
-    background-color: #444;
 }
