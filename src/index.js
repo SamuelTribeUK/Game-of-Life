@@ -366,7 +366,6 @@ let notify = function(text, type) {
 		position: 'right', // `left`, `center` or `right`
 		backgroundColor: backgroundColor,
 		stopOnFocus: true, // Prevents dismissing of toast on hover
-		onClick: function(){} // Callback after click
 	}).showToast();
 }
 
