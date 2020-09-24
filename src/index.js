@@ -26,6 +26,10 @@ let warning = false;
 
 let gameBoard;
 
+let liveCellColour = "#c24d2c";
+let deadCellColour = "#d9dad7";
+let backgroundColour = "#1a2639";
+
 let iterations = 0;
 let status = "stopped";
 
@@ -34,7 +38,7 @@ let interval;
 const canvas = document.querySelector('canvas');
 
 let scene = new Scene();
-let camera = new PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
+let camera = new PerspectiveCamera(75, (window.innerWidth - 258)/(window.innerHeight), 0.1, 1000);
 let renderer = new WebGLRenderer({antialias: true, canvas: canvas});
 let controls = new OrbitControls(camera, canvas);
 controls.enabled = false;
@@ -61,9 +65,9 @@ let initialiseBoard = function() {
 let addMesh = function(state, i, j) {
 	let colour;
 	if (state === 0) {
-		colour = "#43dde6";
+		colour = deadCellColour;
 	} else {
-		colour = "#fc5185";
+		colour = liveCellColour;
 	}
 	let material = new MeshLambertMaterial({color: colour});
 	let mesh = new Mesh(geometry, material);
@@ -85,8 +89,8 @@ let setupScene = function() {
 	camera.position.x = (xSize - 1) / 2;
 	camera.position.y = (ySize - 1) / 2;
 
-	renderer.setClearColor("#ffffff");
-	renderer.setSize(window.innerWidth - 250, window.innerHeight);
+	renderer.setClearColor(backgroundColour);
+	renderer.setSize(window.innerWidth - 258, window.innerHeight);
 
 	addLights();
 }
@@ -174,9 +178,9 @@ let updateColours = function() {
 		for (let j = 0; j < ySize; j++) {
 			state = gameBoard[i][j].state;
 			if (state === 0) {
-				colour = "#43dde6";
+				colour = deadCellColour;
 			} else {
-				colour = "#fc5185";
+				colour = liveCellColour;
 			}
 			gameBoard[i][j].box.material.color.set(colour);
 		}
@@ -223,8 +227,8 @@ let attachClickEvents = function() {
 	element.value = rate.toFixed(1);
 
 	window.addEventListener("resize", () => {
-		renderer.setSize(window.innerWidth - 250, window.innerHeight);
-		camera.aspect = (window.innerWidth - 250) / (window.innerHeight);
+		renderer.setSize(window.innerWidth - 258, window.innerHeight);
+		camera.aspect = (window.innerWidth - 258) / (window.innerHeight);
 
 		camera.updateProjectionMatrix();
 		requestAnimationFrame(render);
@@ -384,9 +388,9 @@ let newGameBoard = function(event) {
 let notify = function(text, type, duration) {
 	let backgroundColor;
 	if (type === "success") {
-		backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
+		backgroundColor = "linear-gradient(to left, #8A261C, #B2482E)";
 	} else if (type === "error") {
-		backgroundColor = "linear-gradient(to right, #FF5F6D, #FFC371)";
+		backgroundColor = "linear-gradient(to left, #8A261C, #B2482E)";
 	}
 	Toastify({
 		text: text,
