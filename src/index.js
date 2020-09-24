@@ -144,7 +144,7 @@ let simulateStep = function() {
 		clearInterval(interval);
 		document.getElementById("stopStart").innerText = "Start";
 		status = "stopped";
-		notify("Game has ended","success", 5000);
+		notify("Game has ended","success", 10000);
 		updateSidebar();
 	}
 
@@ -440,7 +440,7 @@ let toggleOrbitControls = function() {
 		controls.enabled = true;
 		controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
 		orbitToggle = true;
-		notify("Orbit controls enabled", "success", 2000);
+		notify("Orbit controls enabled", "success", 5000);
 		toggleControls(false);
 		render();
 	} else {
