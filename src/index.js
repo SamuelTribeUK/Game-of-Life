@@ -1,7 +1,6 @@
 /* The game board is defined as a 2D array of objects which contain a mesh (called box) and a status (0 or 1 for dead or
  * alive)
- * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
- */
+ * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development */
 
 // Experimenting with colour scheme so living cells will no longer be green
 
@@ -75,8 +74,7 @@ let addMesh = function(state, i, j) {
 
 /* The camera z location is the largest of the x and y sizes with the x and y values being the centre of the grid. The
  * background colour is set to white. The canvas size is set to the window inner sizes with the width - 250 to account
- * for the side panel. The addLights function is called to add 2 PointLights
- */
+ * for the side panel. The addLights function is called to add 2 PointLights */
 let setupScene = function() {
 	if (xSize >= ySize) {
 		camera.position.z = xSize;
@@ -106,8 +104,7 @@ let addLights = function() {
 /* simulateStep creates a deep copy of the game board to iterate over each cell and check for living neighbours to check
  * against the rules of the Game of Life. The new game board is required so there aren't conflicts with changes. After
  * the board has been checked, if no cells have changed then the game is stopped. The side bar and cube colours are then
- * updated with their respective functions
- */
+ * updated with their respective functions */
 let simulateStep = function() {
 	let newGameBoard = $.extend(true, [], gameBoard);
 
@@ -155,8 +152,7 @@ let simulateStep = function() {
 }
 
 /* checkCell takes an x and y value and checks the game board if the cell at that location is alive or dead and returns
- * 1 if it is alive and 0 if dead. Out of bound cells are handled by returning 0
- */
+ * 1 if it is alive and 0 if dead. Out of bound cells are handled by returning 0 */
 let checkCell = function(currX, currY) {
 	if (currX < 0 || currX >= xSize) {
 		return 0;
@@ -170,8 +166,7 @@ let checkCell = function(currX, currY) {
 }
 
 /* updateColours iterates over the game board and updates the colours of the cubes on the canvas to represent the living
- * and dead cells with green and white respectively
- */
+ * and dead cells with green and white respectively */
 let updateColours = function() {
 	let state;
 	let colour;
@@ -189,8 +184,7 @@ let updateColours = function() {
 }
 
 /* The functions that handle all buttons and inputs on the side panel are attached in this function, as well as the
- * resize event function and the arrow key camera controls. The input fields are populated with the default start values
- */
+ * resize event function and the arrow key camera controls. The input fields are populated with the start values */
 let attachClickEvents = function() {
 	let element = document.querySelector("#stopStart");
 	element.addEventListener("click", stopStart);
@@ -246,8 +240,7 @@ let updateSidebar = function() {
 }
 
 /* render renders the objects in the scene in accordance to the camera location. If orbit controls are enabled then an
- * animation frame is requested too
- */
+ * animation frame is requested too */
 let render = function() {
 	if (orbitToggle) {
 		requestAnimationFrame(render);
@@ -269,8 +262,7 @@ updateSidebar();
 render();
 
 /* When the user clicks the stop/start button, this function handles the stopping and starting of the game using
- * setInterval nad clearInterval, updating the sidebar and button text in the process
- */
+ * setInterval nad clearInterval, updating the sidebar and button text in the process */
 let stopStart = function() {
 	if (status === "stopped") {
 		interval = setInterval(simulateStep, timeout);
@@ -287,8 +279,7 @@ let stopStart = function() {
 }
 
 /* doDispose is a thorough deep dispose of the scene and it's children. This is called when a new game board is made to
- * avoid memory leaks. The code was taken from: https://github.com/mrdoob/three.js/issues/5175
- */
+ * avoid memory leaks. The code was taken from: https://github.com/mrdoob/three.js/issues/5175 */
 let doDispose = function(obj) {
 	if (obj !== null)
 	{
@@ -318,8 +309,7 @@ let doDispose = function(obj) {
 /* newGameBoard is called when the user clicks the update button on the side bar. First the inputs are validated, with
  * error notifications being returned if they are invalid. If all values are valid then the scene is disposed using
  * doDispose and the new values are used to create a new scene. If the orbit camera was enabled then it is disabled to
- * prevent any problems with significant FPS drops
- */
+ * prevent any problems with significant FPS drops */
 let newGameBoard = function(event) {
 	event.preventDefault(); // This stops the form from submitting and refreshing the page
 	let inputX = document.getElementById("xSizeInput").value;
@@ -390,8 +380,7 @@ let newGameBoard = function(event) {
 }
 
 /* notify handles all notification displays using Toastify. it takes the text for the message, the type ("success" or
- * "error") and the duration in milliseconds
- */
+ * "error") and the duration in milliseconds */
 let notify = function(text, type, duration) {
 	let backgroundColor;
 	if (type === "success") {
@@ -411,8 +400,7 @@ let notify = function(text, type, duration) {
 }
 
 /* The orbit controls can be disabled using this function. It sets controls.enabled and orbitToggle to false and adds
- * arrow key event listeners for the standard camera controls
- */
+ * arrow key event listeners for the standard camera controls */
 let disableOrbit = function() {
 	controls.enabled = false;
 	orbitToggle = false;
@@ -431,8 +419,7 @@ let toggleControls = function(enable) {
 
 /* toggleOrbitControls handles the orbit camera controls being enabled/disabled and configures the target of the camera.
  * The arrow key event listeners for the standard camera controls are disabled when enabling orbit controls to avoid
- * conflicts with the existing event listeners included with orbit controls
- */
+ * conflicts with the existing event listeners included with orbit controls */
 let toggleOrbitControls = function() {
 	if (orbitCheckbox.checked) {
 		// Enable orbit controls
@@ -450,8 +437,7 @@ let toggleOrbitControls = function() {
 }
 
 /* arrowKeyCameraControls manages the camera location movement, requesting an animation frame after camera movement to
- * render the changes on the canvas
- */
+ * render the changes on the canvas */
 let arrowKeyCameraControls = function(event) {
 	switch (event.key) {
 		case 'ArrowUp' || 'Up':
@@ -470,8 +456,7 @@ let arrowKeyCameraControls = function(event) {
 }
 
 /* sidePanelCameraControls handles the side panel button camera movement, requesting an animation frame after camera
- * movement to render the changes on the canvas
- */
+ * movement to render the changes on the canvas */
 let sidePanelCameraControls = function(event) {
 	switch (event.target.id) {
 		case 'cameraUp':
@@ -490,16 +475,14 @@ let sidePanelCameraControls = function(event) {
 }
 
 /* zoomIn handles the side panel button zoom in control, requesting an animation frame after camera movement to render
- * the changes on the canvas
- */
+ * the changes on the canvas */
 let zoomIn = function() {
 	camera.position.z -= 1;
 	if (!(orbitToggle)) requestAnimationFrame(render);
 }
 
 /* zoomOut handles the side panel button zoom out control, requesting an animation frame after camera movement to render
- * the changes on the canvas
- */
+ * the changes on the canvas */
 let zoomOut = function() {
 	camera.position.z += 1;
 	if (!(orbitToggle)) requestAnimationFrame(render);
