@@ -19,7 +19,7 @@ canvas {
     float: left;
     top: 0;
     left: 0;
-    background-color: #111; /* Black*/
+    background: linear-gradient(to bottom, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100));
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 20px;
     padding-left: 20px;

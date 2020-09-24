@@ -21,12 +21,10 @@ let xSize = 25;
 let ySize = 25;
 let timeout = 200;
 let orbitToggle = false;
-
 let warning = false;
 
 let gameBoard;
 
-let controls;
 let iterations = 0;
 let status = "stopped";
 
@@ -34,9 +32,12 @@ let interval;
 
 document.getElementById("stopStart").innerText = "Start";
 
+const canvas = document.querySelector('canvas');
+
 let scene = new Scene();
 let camera = new PerspectiveCamera(75, (window.innerWidth - 250)/(window.innerHeight), 0.1, 1000);
-let renderer = new WebGLRenderer({antialias: true});
+let renderer = new WebGLRenderer({antialias: true, canvas: canvas});
+let controls = new OrbitControls(camera, canvas);
 let geometry = new BoxGeometry(0.9, 0.9, 0.9);
 let light = new PointLight(0xFFFFFF, 1, 500);
 
@@ -103,8 +104,6 @@ let setupScene = function() {
 	renderer.setClearColor("#ffffff");
 	renderer.setSize(window.innerWidth - 250, window.innerHeight);
 
-	document.body.appendChild(renderer.domElement);
-
 	addLights();
 }
 
@@ -168,7 +167,7 @@ let simulateStep = function() {
 		clearInterval(interval);
 		document.getElementById("stopStart").innerText = "Start";
 		status = "stopped";
-		notify("Game has ended","success");
+		notify("Game has ended","success", 5000);
 		updateSidebar();
 	}
 
@@ -291,27 +290,27 @@ let updateValues = function(event) {
 	let timeInput = document.getElementById("timeoutInput").value;
 
 	if (inputX === "" || inputY === "" || timeInput === "") {
-		notify("Dimensions or rate cannot be empty","error");
+		notify("Dimensions or rate cannot be empty", "error", 5000);
 		return false;
 	}
 
 	if (inputX < 1 || inputY < 1) {
-		notify("Dimensions must be 1 or more","error");
+		notify("Dimensions must be 1 or more", "error", 5000);
 		return false;
 	}
 
 	if (timeInput < 0.1) {
-		notify("rate must be 0.1 or more","error");
+		notify("rate must be 0.1 or more", "error", 5000);
 		return false;
 	}
 
 	if (timeInput > 10) {
-		notify("WARNING: Rates higher than 10 can cause issues!","error");
+		notify("WARNING: Rates higher than 10 can cause issues!", "error", 5000);
 	}
 
 	if (inputX > 100 || inputY > 100) {
 		if (!warning) {
-			notify("WARNING: Large dimensions can use a lot of resources! Click update again if you are sure","error");
+			notify("WARNING: Large dimensions can use a lot of resources! Click update again if you are sure", "error", 5000);
 			warning = true;
 			return false;
 		}
@@ -321,9 +320,8 @@ let updateValues = function(event) {
 	ySize = inputY;
 	timeout = 1000 / timeInput;
 
-	document.body.removeChild(renderer.domElement);
-
 	doDispose(scene);
+
 
 	if (status === "playing") {
 		stopStart();
@@ -342,14 +340,26 @@ let updateValues = function(event) {
 	camera.position.y = (ySize - 1) / 2;
 	camera.lookAt(new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0))
 
-	toggleOrbitControls();
+	camera.updateProjectionMatrix();
 
 	updateSidebar();
 
-	render();
+	if (orbitToggle) {
+		orbitCheckbox.checked = false;
+		disableOrbit();
+	} else {
+		render();
+	}
 }
 
-let notify = function(text, type) {
+let disableOrbit = function() {
+	controls.enabled = false;
+	orbitToggle = false;
+	toggleControls(true);
+	document.addEventListener("keydown", cameraMove);
+}
+
+let notify = function(text, type, duration) {
 	let backgroundColor;
 	if (type === "success") {
 		backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
@@ -358,7 +368,7 @@ let notify = function(text, type) {
 	}
 	Toastify({
 		text: text,
-		duration: 10000,
+		duration: duration,
 		close: true,
 		gravity: "top", // `top` or `bottom`
 		position: 'right', // `left`, `center` or `right`
@@ -381,21 +391,15 @@ let toggleOrbitControls = function() {
 	if (orbitCheckbox.checked) {
 		// Enable orbit controls
 		document.removeEventListener("keydown", cameraMove);
-		controls = new OrbitControls(camera, renderer.domElement);
+		controls.enabled = true;
 		controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
-		controls.update();
 		orbitToggle = true;
+		notify("Orbit controls enabled", "success", 2000);
 		toggleControls(false);
 		render();
 	} else {
 		// Disable orbit controls
-		if (typeof controls !== "undefined") {
-			controls.dispose();
-			controls.update();
-		}
-		orbitToggle = false;
-		toggleControls(true);
-		document.addEventListener("keydown", cameraMove);
+		disableOrbit();
 	}
 }
 
