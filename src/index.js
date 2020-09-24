@@ -19,7 +19,7 @@ import Toastify from "toastify-js";
 
 let xSize = 25;
 let ySize = 25;
-let timeout = 200;
+let timeout = 100;
 let orbitToggle = false;
 let warning = false;
 
@@ -111,7 +111,6 @@ setupScene();
 
 let render = function() {
 	if (orbitToggle) {
-		console.log("orbit toggle true, animation frame requested");
 		requestAnimationFrame(render);
 	}
 	renderer.render(scene, camera);
