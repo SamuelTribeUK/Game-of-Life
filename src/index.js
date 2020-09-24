@@ -3,6 +3,8 @@
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development
  */
 
+// Experimenting with colour scheme so living cells will no longer be green
+
 import {
 	Scene,
 	PerspectiveCamera,
@@ -60,9 +62,9 @@ let initialiseBoard = function() {
 let addMesh = function(state, i, j) {
 	let colour;
 	if (state === 0) {
-		colour = "#FFFFFF";
+		colour = "#43dde6";
 	} else {
-		colour = "#19A74A";
+		colour = "#fc5185";
 	}
 	let material = new MeshLambertMaterial({color: colour});
 	let mesh = new Mesh(geometry, material);
@@ -177,16 +179,16 @@ let updateColours = function() {
 		for (let j = 0; j < ySize; j++) {
 			state = gameBoard[i][j].state;
 			if (state === 0) {
-				colour = "#FFFFFF";
+				colour = "#43dde6";
 			} else {
-				colour = "#19A74A";
+				colour = "#fc5185";
 			}
 			gameBoard[i][j].box.material.color.set(colour);
 		}
 	}
 }
 
-/* The functions that handle all buttons and inputs on the sidepanel are attached in this function, as well as the
+/* The functions that handle all buttons and inputs on the side panel are attached in this function, as well as the
  * resize event function and the arrow key camera controls. The input fields are populated with the default start values
  */
 let attachClickEvents = function() {
@@ -253,7 +255,6 @@ let render = function() {
 	renderer.render(scene, camera);
 }
 
-
 // The following code is called to setup the Game of Life using the above functions
 setupScene();
 
@@ -286,7 +287,7 @@ let stopStart = function() {
 }
 
 /* doDispose is a thorough deep dispose of the scene and it's children. This is called when a new game board is made to
- * handle memory correctly. The code was taken from: https://github.com/mrdoob/three.js/issues/5175
+ * avoid memory leaks. The code was taken from: https://github.com/mrdoob/three.js/issues/5175
  */
 let doDispose = function(obj) {
 	if (obj !== null)

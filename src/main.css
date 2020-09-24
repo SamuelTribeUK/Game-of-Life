@@ -10,7 +10,7 @@ canvas {
     float:right;
 }
 
-/* The sidepanel menu */
+/* The side panel menu */
 .sidepanel {
     height: 100vh; /* Specify a height */
     width: 250px; /* 0 width - change this with JavaScript */
@@ -19,7 +19,7 @@ canvas {
     float: left;
     top: 0;
     left: 0;
-    background: linear-gradient(to bottom, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100));
+    background: #364f6b;
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 20px;
     padding-left: 20px;
@@ -35,7 +35,7 @@ canvas {
     transition: 0.3s;
 }
 
-/* The sidepanel text */
+/* The side panel text */
 .sidepanel p {
     margin: 0 0;
 }
