@@ -12,14 +12,6 @@
 	<button class="stopStart" id="stopStart">Start</button>
 	<p id="status"></p>
 	<p id="iterations"></p>
-	<div class="cameraControls" id="cameraControls">
-		<button class="moveCamera" id="zoomIn">+</button>
-		<button class="moveCamera" id="zoomOut">-</button>
-		<button class="moveCamera" id="cameraLeft">&larr;</button>
-		<button class="moveCamera" id="cameraRight">&rarr;</button>
-		<button class="moveCamera" id="cameraUp">&uarr;</button>
-		<button class="moveCamera" id="cameraDown">&darr;</button>
-	</div>
 
 	<div class="orbitToggle">
 		<label class="orbitBox" for="orbitControls">Orbit Controls:</label>
@@ -28,20 +20,20 @@
 
 	<form>
 		<div class="xInputs">
-			<label class="xInput" for="xSizeInput">Number of Columns: </label>
-			<input class="xInput" type="number" id="xSizeInput" min="1" required><br>
+			<label class="inputLabel" for="xSizeInput">Number of Columns:</label>
+			<input class="inputField" type="number" id="xSizeInput" min="1" required>
 		</div>
 		<div class="yInputs">
-			<label class="yInput" for="ySizeInput">Number of Rows: </label>
-			<input class="yInput" type="number" id="ySizeInput" min="1" required><br>
+			<label class="inputLabel" for="ySizeInput">Number of Rows:</label>
+			<input class="inputField" type="number" id="ySizeInput" min="1" required>
 		</div>
 		<div class="timeInputs">
-			<label class="timeInput" for="timeoutInput">Rate (per second): </label>
-			<input class="timeInput" type="number" id="timeoutInput" min="0.1" step="0.1" required><br>
+			<label class="inputLabel" for="timeoutInput">Rate (per second):</label>
+			<input class="inputField" type="number" id="timeoutInput" min="0.1" step="0.1" required>
 		</div>
 
 		<div class="submitValues">
-			<input type="submit" id="submit" value="update">
+			<input class="updateButton" type="submit" id="submit" value="update">
 		</div>
 	</form>
 </div>

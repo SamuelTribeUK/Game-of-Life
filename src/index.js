@@ -193,24 +193,6 @@ let attachClickEvents = function() {
 	let element = document.querySelector("#stopStart");
 	element.addEventListener("click", stopStart);
 
-	element = document.querySelector("#zoomIn");
-	element.addEventListener("click", zoomIn);
-
-	element = document.querySelector("#zoomOut");
-	element.addEventListener("click", zoomOut);
-
-	element = document.querySelector("#cameraLeft");
-	element.addEventListener("click", sidePanelCameraControls);
-
-	element = document.querySelector("#cameraRight");
-	element.addEventListener("click", sidePanelCameraControls);
-
-	element = document.querySelector("#cameraUp");
-	element.addEventListener("click", sidePanelCameraControls);
-
-	element = document.querySelector("#cameraDown");
-	element.addEventListener("click", sidePanelCameraControls);
-
 	element = document.querySelector("#submit");
 	element.addEventListener("click", newGameBoard);
 
@@ -408,17 +390,7 @@ let notify = function(text, type, duration) {
 let disableOrbit = function() {
 	controls.enabled = false;
 	orbitToggle = false;
-	toggleControls(true);
 	document.addEventListener("keydown", arrowKeyCameraControls);
-}
-
-// toggleControls enables/disables the camera control buttons on the side bar depending on their current state
-let toggleControls = function(enable) {
-	let cameraControls = document.getElementById("cameraControls");
-	let buttons = cameraControls.getElementsByTagName("button");
-	for (let i = 0; i < buttons.length; i++) {
-		buttons[i].disabled = !enable;
-	}
 }
 
 /* toggleOrbitControls handles the orbit camera controls being enabled/disabled and configures the target of the camera.
@@ -432,7 +404,6 @@ let toggleOrbitControls = function() {
 		controls.target = (new Vector3((xSize - 1) / 2, (ySize - 1) / 2, 0));
 		orbitToggle = true;
 		notify("Orbit controls enabled", "success", 5000);
-		toggleControls(false);
 		render();
 	} else {
 		// Disable orbit controls
@@ -443,51 +414,38 @@ let toggleOrbitControls = function() {
 /* arrowKeyCameraControls manages the camera location movement, requesting an animation frame after camera movement to
  * render the changes on the canvas */
 let arrowKeyCameraControls = function(event) {
-	switch (event.key) {
-		case 'ArrowUp' || 'Up':
-			camera.position.y += 1;
-			break;
-		case 'ArrowLeft' || 'Left':
-			camera.position.x -= 1;
-			break;
-		case 'ArrowRight' || 'Right':
-			camera.position.x += 1;
-			break;
-		case 'ArrowDown' || 'Down':
-			camera.position.y -= 1;
+	let direction = new Vector3;
+	camera.getWorldDirection(direction);
+
+	if (direction.z < 0) {
+		switch (event.key) {
+			case 'ArrowUp' || 'Up':
+				camera.position.y += 1;
+				break;
+			case 'ArrowLeft' || 'Left':
+				camera.position.x -= 1;
+				break;
+			case 'ArrowRight' || 'Right':
+				camera.position.x += 1;
+				break;
+			case 'ArrowDown' || 'Down':
+				camera.position.y -= 1;
+		}
+	} else {
+		switch (event.key) {
+			case 'ArrowUp' || 'Up':
+				camera.position.y += 1;
+				break;
+			case 'ArrowLeft' || 'Left':
+				camera.position.x += 1;
+				break;
+			case 'ArrowRight' || 'Right':
+				camera.position.x -= 1;
+				break;
+			case 'ArrowDown' || 'Down':
+				camera.position.y -= 1;
+		}
 	}
+
 	requestAnimationFrame(render);
-}
-
-/* sidePanelCameraControls handles the side panel button camera movement, requesting an animation frame after camera
- * movement to render the changes on the canvas */
-let sidePanelCameraControls = function(event) {
-	switch (event.target.id) {
-		case 'cameraUp':
-			camera.position.y += 1;
-			break;
-		case 'cameraLeft':
-			camera.position.x -= 1;
-			break;
-		case 'cameraRight':
-			camera.position.x += 1;
-			break;
-		case 'cameraDown':
-			camera.position.y -= 1;
-	}
-	if (!(orbitToggle)) requestAnimationFrame(render);
-}
-
-/* zoomIn handles the side panel button zoom in control, requesting an animation frame after camera movement to render
- * the changes on the canvas */
-let zoomIn = function() {
-	camera.position.z -= 1;
-	if (!(orbitToggle)) requestAnimationFrame(render);
-}
-
-/* zoomOut handles the side panel button zoom out control, requesting an animation frame after camera movement to render
- * the changes on the canvas */
-let zoomOut = function() {
-	camera.position.z += 1;
-	if (!(orbitToggle)) requestAnimationFrame(render);
 }
