@@ -2,7 +2,7 @@
  * alive)
  * Currently using Webpack so I can use npm packages, to bundle files for testing use npx webpack --mode=development */
 
-// Experimenting with colour scheme so living cells will no longer be green
+// TODO Implement step button
 
 import {
 	Scene,
